@@ -1,0 +1,43 @@
+import re
+
+def lexical_analysis(input_line):
+    # Define regular expressions to match different token types
+    patterns = [
+        (r'[a-zA-Z_]\w*', 'IDENTIFIER'),  # Identifiers (variables, function names, etc.)
+        (r'\d+', 'INTEGER'),              # Integers
+        (r'"(.*?)"', 'STRING'),           # Strings enclosed in double quotes
+        (r'\+', 'PLUS'),                  # Plus sign
+        (r'-', 'MINUS'),                  # Minus sign
+        (r'\*', 'MULTIPLY'),              # Multiply sign
+        (r'/', 'DIVIDE'),                 # Divide sign
+        (r'=', 'ASSIGN'),                 # Assignment operator
+        (r'\(', 'LEFT_PAREN'),            # Left parenthesis
+        (r'\)', 'RIGHT_PAREN'),           # Right parenthesis
+        (r';', 'SEMICOLON'),              # Semicolon
+    ]
+
+    # Tokenize the input line
+    tokens = []
+    while input_line:
+        match = None
+        for pattern, token_type in patterns:
+            regex = re.compile(r'^\s*' + pattern)
+            match = regex.match(input_line)
+            if match:
+                value = match.group(0).strip()
+                tokens.append((value, token_type))
+                input_line = input_line[len(value):]
+                break
+
+        if not match:
+            raise ValueError(f"Unexpected character: {input_line[0]}")
+
+    return tokens
+
+if __name__ == "__main__":
+    input_line = input("Enter a line for lexical analysis: ")
+    tokens = lexical_analysis(input_line)
+
+    print("Tokens:")
+    for value, token_type in tokens:
+        print(f"{value}: {token_type}")

@@ -1,0 +1,28 @@
+def has_left_recursion(grammar):
+    for non_terminal, productions in grammar.items():
+        for production in productions:
+            if production.startswith(non_terminal):
+                return True
+    return False
+
+def eliminate_left_recursion(grammar):
+    if not has_left_recursion(grammar):
+        print("The grammar does not contain left recursion.")
+        return grammar
+
+    new_grammar = {}
+    # ... (rest of the code remains the same)
+
+# Example grammar (replace with your grammar)
+grammar = {
+    'S': ['S + T', 'T'],
+    'T': ['T * F', 'F'],
+    'F': ['( S )', 'id']
+}
+
+if has_left_recursion(grammar):
+    new_grammar = eliminate_left_recursion(grammar)
+    for non_terminal, productions in new_grammar.items():
+        print(f"{non_terminal} -> {' | '.join(productions)}")
+else:
+    print("The grammar does not contain left recursion.")

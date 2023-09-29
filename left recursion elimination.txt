@@ -1,0 +1,46 @@
+def eliminate_left_recursion(grammar):
+    new_grammar = {}  # Initialize an empty grammar for the modified rules
+
+    for non_terminal, productions in grammar.items():
+        # Divide productions into left-recursive and non-left-recursive
+        left_recursive_productions = []
+        non_left_recursive_productions = []
+
+        for production in productions:
+            if production[0] == non_terminal:
+                left_recursive_productions.append(production)
+            else:
+                non_left_recursive_productions.append(production)
+
+        if len(left_recursive_productions) > 0:
+            # Create a new non-terminal for the left-recursive productions
+            new_non_terminal = non_terminal + "'"
+            new_grammar[new_non_terminal] = []
+
+            # Add non-left-recursive productions
+            for production in non_left_recursive_productions:
+                new_grammar[non_terminal].append(production + new_non_terminal)
+
+            # Add epsilon ('') to the non-left-recursive non-terminal
+            new_grammar[non_terminal].append('')
+
+            # Add left-recursive productions with the new non-terminal
+            for production in left_recursive_productions:
+                new_grammar[new_non_terminal].append(production[1:] + new_non_terminal)
+
+        else:
+            # If no left recursion, just copy the original productions
+            new_grammar[non_terminal] = productions
+
+    return new_grammar
+
+# Example grammar (replace with your grammar)
+grammar = {
+    'S': ['S + T', 'T'],
+    'T': ['T * F', 'F'],
+    'F': ['( S )', 'id']
+}
+
+new_grammar = eliminate_left_recursion(grammar)
+for non_terminal, productions in new_grammar.items():
+    print(f"{non_terminal} -> {' | '.join(productions)}")
